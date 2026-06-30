@@ -4,6 +4,7 @@ let dropMaker; // Will store our timer that creates drops regularly
 let score = 0; // Keeps track of the player's score
 let timeRemaining = 30; // Countdown timer starting at 30 seconds
 let timerId; // Will store our timer that counts down
+let currentDifficulty = "easy"; // Default difficulty for new games
 
 // Arrays of possible messages
 const winningMessages = [
@@ -24,6 +25,15 @@ const losingMessages = [
 
 // Wait for button click to start the game
 document.getElementById("start-btn").addEventListener("click", startGame);
+
+function setDifficulty(level) {
+  currentDifficulty = level;
+  document.querySelectorAll(".difficulty-btn").forEach((button) => {
+    const isActive = button.dataset.difficulty === level;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+}
 
 function startGame() {
   // Prevent multiple games from running at once
@@ -75,6 +85,12 @@ function endGame() {
 
 // Handle restart button
 document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".difficulty-btn").forEach((button) => {
+    button.addEventListener("click", () => setDifficulty(button.dataset.difficulty));
+  });
+
+  setDifficulty(currentDifficulty);
+
   const restartBtn = document.getElementById("restart-btn");
   restartBtn.addEventListener("click", () => {
     // Reset game state
@@ -129,13 +145,24 @@ function createDrop() {
   // Create a new div element that will be our water drop
   const drop = document.createElement("div");
 
-  // Decide randomly whether this is a bad drop (25% chance)
-  const isBad = Math.random() < 0.25;
+  const badDropChance = currentDifficulty === "hard" ? 0.35 : currentDifficulty === "easy" ? 0.15 : 0.25;
+  const isBad = Math.random() < badDropChance;
   drop.className = isBad ? "water-drop bad-drop" : "water-drop";
 
-  // Make drops different sizes for visual variety
+  // Make drops different sizes for visual variety, with each difficulty favoring a different range
   const initialSize = 60;
-  const sizeMultiplier = Math.random() * 0.8 + 0.5;
+  let sizeMultiplier;
+
+  if (isBad && currentDifficulty === "hard") {
+    sizeMultiplier = 1.1 + Math.random() * 0.4; // larger bad drops in hard mode
+  } else if (currentDifficulty === "easy") {
+    sizeMultiplier = Math.random() < 0.65 ? 1.1 + Math.random() * 0.35 : 0.7 + Math.random() * 0.25;
+  } else if (currentDifficulty === "medium") {
+    sizeMultiplier = Math.random() < 0.6 ? 0.75 + Math.random() * 0.2 : 0.5 + Math.random() * 0.2;
+  } else {
+    sizeMultiplier = 0.7 + Math.random() * 0.25;
+  }
+
   const size = initialSize * sizeMultiplier;
   drop.style.width = drop.style.height = `${size}px`;
 
