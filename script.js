@@ -37,7 +37,7 @@ function startGame() {
   document.getElementById("start-modal").classList.add("hidden");
 
   // Create new drops every second (1000 milliseconds)
-  dropMaker = setInterval(createDrop, 1000);
+  dropMaker = setInterval(createDrop, 800);
 
   // Start countdown timer
   timerId = setInterval(() => {
