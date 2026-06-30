@@ -30,7 +30,7 @@ body {
     align-items: center;
     min-height: 100vh;
     background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
+    font-family: "Proxima Nova", "Avenir", sans-serif;
 }
 
 .game-wrapper {
@@ -38,6 +38,23 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 20px;
+}
+
+.game-footer {
+    display: flex;
+    gap: 24px;
+    margin-top: 8px;
+}
+
+.game-footer a {
+    color: #2E9DF7;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.game-footer a:hover {
+    color: #159A48;
+    text-decoration: underline;
 }
 
 .score-panel {
@@ -143,7 +160,7 @@ body {
 }
 
 .game-tagline {
-    color: #666;
+    color: #4FCB53;
     font-size: 18px;
     margin-bottom: 20px;
     text-align: center;
@@ -176,13 +193,13 @@ body {
 .modal-content h2 {
     font-size: 36px;
     margin-bottom: 20px;
-    color: #131313;
+    color: #2E9DF7;
 }
 
 .modal-content p {
     font-size: 20px;
     margin-bottom: 30px;
-    color: #666;
+    color: #4FCB53;
 }
 
 #restart-btn {
