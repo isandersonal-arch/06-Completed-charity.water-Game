@@ -5,6 +5,7 @@ let score = 0; // Keeps track of the player's score
 let timeRemaining = 30; // Countdown timer starting at 30 seconds
 let timerId; // Will store our timer that counts down
 let currentDifficulty = "easy"; // Default difficulty for new games
+let gameOverTimeoutId; // Will store the auto-return timer for the game-over modal
 
 // Arrays of possible messages
 const winningMessages = [
@@ -23,6 +24,8 @@ const losingMessages = [
   "You Can Do Better! 🫣"
 ];
 
+const goodDropSound = new Audio("img/freesound_community-cartoon_waterdrop-37499.mp3");
+
 // Wait for button click to start the game
 document.getElementById("start-btn").addEventListener("click", startGame);
 
@@ -38,6 +41,11 @@ function setDifficulty(level) {
 function startGame() {
   // Prevent multiple games from running at once
   if (gameRunning) return;
+
+  if (gameOverTimeoutId) {
+    clearTimeout(gameOverTimeoutId);
+    gameOverTimeoutId = null;
+  }
 
   gameRunning = true;
   timeRemaining = 30; // Reset timer to 30 seconds
@@ -81,6 +89,16 @@ function endGame() {
 
   scoreText.textContent = `Final Score: ${score}`;
   modal.classList.remove("hidden");
+
+  if (gameOverTimeoutId) {
+    clearTimeout(gameOverTimeoutId);
+  }
+
+  gameOverTimeoutId = setTimeout(() => {
+    modal.classList.add("hidden");
+    document.getElementById("start-modal").classList.remove("hidden");
+    gameOverTimeoutId = null;
+  }, 30000);
 }
 
 // Handle restart button
@@ -93,6 +111,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const restartBtn = document.getElementById("restart-btn");
   restartBtn.addEventListener("click", () => {
+    if (gameOverTimeoutId) {
+      clearTimeout(gameOverTimeoutId);
+      gameOverTimeoutId = null;
+    }
+
     // Reset game state
     score = 0;
     document.getElementById("score").textContent = "0";
@@ -110,6 +133,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("reset-btn");
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
+      if (gameOverTimeoutId) {
+        clearTimeout(gameOverTimeoutId);
+        gameOverTimeoutId = null;
+      }
+
       score = 0;
       document.getElementById("score").textContent = "0";
 
@@ -193,6 +221,8 @@ function createDrop() {
     } else {
       score++; // Good drop
       drop.classList.add("clicked");
+      goodDropSound.currentTime = 0;
+      goodDropSound.play().catch(() => {});
     }
 
     document.getElementById("score").textContent = score; // Update score display
