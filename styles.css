@@ -77,6 +77,28 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.milestone-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-4px);
+    min-height: 30px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    font-weight: bold;
+    color: #4FCB53;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 5;
+}
+
+.milestone-message.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+}
+
 .timer {
     flex: 0 1 auto;
     font-size: 24px;

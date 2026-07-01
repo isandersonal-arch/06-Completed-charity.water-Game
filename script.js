@@ -24,6 +24,21 @@ const losingMessages = [
   "You Can Do Better! 🫣"
 ];
 
+const milestoneMessages = [
+  {
+    points: 5,
+    texts: ["🚰 Good start!", "💧 Nice catch!", "🍀 Beginner's luck!"]
+  },
+  {
+    points: 10,
+    texts: ["🪣 Great work!", "🫧 You got this!", "💪 Keep going!"]
+  },
+  {
+    points: 15,
+    texts: ["🌊 Almost there!", "🌊 Fantastic flow!", "🌊 You're on a roll!"]
+  }
+];
+
 const goodDropSound = new Audio("img/freesound_community-cartoon_waterdrop-37499.mp3");
 
 // Wait for button click to start the game
@@ -35,6 +50,29 @@ function setDifficulty(level) {
     const isActive = button.dataset.difficulty === level;
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+}
+
+function showMilestoneMessage(message) {
+  const milestoneElement = document.getElementById("milestone-message");
+  if (!milestoneElement) return;
+
+  milestoneElement.textContent = message;
+  milestoneElement.classList.add("show");
+
+  clearTimeout(showMilestoneMessage.timeoutId);
+  showMilestoneMessage.timeoutId = setTimeout(() => {
+    milestoneElement.classList.remove("show");
+    milestoneElement.textContent = "";
+  }, 1800);
+}
+
+function checkMilestones(previousScore, newScore) {
+  milestoneMessages.forEach((milestone) => {
+    if (previousScore < milestone.points && newScore >= milestone.points) {
+      const randomMessage = milestone.texts[Math.floor(Math.random() * milestone.texts.length)];
+      showMilestoneMessage(randomMessage);
+    }
   });
 }
 
@@ -214,6 +252,7 @@ function createDrop() {
     // Prevent double-clicks
     drop.style.pointerEvents = "none";
 
+    const previousScore = score;
     const wasBad = drop.classList.contains("bad-drop");
     if (wasBad) {
       score--; // Bad drops are worth -1
@@ -226,6 +265,7 @@ function createDrop() {
     }
 
     document.getElementById("score").textContent = score; // Update score display
+    checkMilestones(previousScore, score);
 
     // Delay removal so the color change is visible
     setTimeout(() => {
